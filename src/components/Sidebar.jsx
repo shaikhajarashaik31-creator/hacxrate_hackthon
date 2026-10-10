@@ -21,11 +21,12 @@ import {
   ShieldAlert,
   GraduationCap,
   Activity,
+  LogOut,
   X
 } from 'lucide-react';
 
 export function Sidebar({ isOpen, onClose }) {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   const studentLinks = [
     { to: '/student/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -142,16 +143,25 @@ export function Sidebar({ isOpen, onClose }) {
           })}
         </nav>
 
-        {/* Footer profile snippet */}
+        {/* Footer profile snippet & Sign Out */}
         <div className="p-4 border-t border-slate-800 bg-slate-950/40">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-lg bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 flex items-center justify-center font-bold text-xs">
-              {user?.name?.[0] || 'U'}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3 overflow-hidden">
+              <div className="w-8 h-8 rounded-lg bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 flex items-center justify-center font-bold text-xs flex-shrink-0">
+                {user?.name?.[0] || 'U'}
+              </div>
+              <div className="truncate flex-1">
+                <p className="text-xs font-semibold text-slate-200 truncate">{user?.name}</p>
+                <p className="text-[10px] text-slate-400 truncate capitalize">{user?.role} Portal</p>
+              </div>
             </div>
-            <div className="truncate flex-1">
-              <p className="text-xs font-semibold text-slate-200 truncate">{user?.name}</p>
-              <p className="text-[10px] text-slate-400 truncate capitalize">{user?.role} Portal</p>
-            </div>
+            <button
+              onClick={logout}
+              title="Sign Out of EduPulse"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-950/40 transition cursor-pointer flex-shrink-0 ml-2"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </aside>

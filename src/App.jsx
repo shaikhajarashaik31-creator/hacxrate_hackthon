@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -14,6 +14,7 @@ import EditorPage from './pages/EditorPage';
 import VerifyCertificate from './pages/VerifyCertificate';
 import AIAssistant from './pages/AIAssistant';
 import ChangePassword from './pages/ChangePassword';
+import NotFound from './pages/NotFound';
 
 // Student Pages
 import StudentDashboard from './pages/student/StudentDashboard';
@@ -48,22 +49,68 @@ import StudentProgress from './pages/admin/StudentProgress';
 import TeacherActivity from './pages/admin/TeacherActivity';
 import ActivityTimeline from './pages/admin/ActivityTimeline';
 
+// Dedicated Sign Out component to safely handle /logout and /signout routes
+function SignOutHandler() {
+  const { logout } = useAuth();
+  useEffect(() => {
+    logout();
+  }, [logout]);
+
+  return <Navigate to="/login" replace />;
+}
+
 export function App() {
   const { user, isAuthenticated } = useAuth();
 
   return (
     <Routes>
-      {/* Public Login Routes */}
+      {/* Public Login & Sign In Routes */}
       <Route
         path="/login"
         element={
           isAuthenticated && user ? (
             <Navigate to={`/${user.role}/dashboard`} replace />
           ) : (
-            <Login />
+            <Login initialMode="signin" />
           )
         }
       />
+      <Route
+        path="/signin"
+        element={
+          isAuthenticated && user ? (
+            <Navigate to={`/${user.role}/dashboard`} replace />
+          ) : (
+            <Login initialMode="signin" />
+          )
+        }
+      />
+
+      {/* Public Sign Up & Register Routes */}
+      <Route
+        path="/signup"
+        element={
+          isAuthenticated && user ? (
+            <Navigate to={`/${user.role}/dashboard`} replace />
+          ) : (
+            <Login initialMode="signup" />
+          )
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          isAuthenticated && user ? (
+            <Navigate to={`/${user.role}/dashboard`} replace />
+          ) : (
+            <Login initialMode="signup" />
+          )
+        }
+      />
+
+      {/* Dedicated Sign Out / Logout Routes */}
+      <Route path="/logout" element={<SignOutHandler />} />
+      <Route path="/signout" element={<SignOutHandler />} />
 
       {/* Dedicated Student Login Routes */}
       <Route path="/login/student" element={<StudentLogin />} />
@@ -193,8 +240,11 @@ export function App() {
         <Route index element={<AIAssistant />} />
       </Route>
 
-      {/* Fallback Catch-All */}
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      {/* Explicit 404 Route */}
+      <Route path="/404" element={<NotFound />} />
+
+      {/* Fallback Catch-All Route */}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

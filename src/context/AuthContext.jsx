@@ -47,6 +47,19 @@ export function AuthProvider({ children }) {
     return { user: receivedUser, redirectUrl };
   };
 
+  const register = async ({ name, email, password, role = 'student', department }) => {
+    const res = await api.post('/auth/register', { name, email, password, role, department });
+    const { token: receivedToken, user: receivedUser, redirectUrl } = res.data;
+
+    localStorage.setItem('token', receivedToken);
+    localStorage.setItem('user', JSON.stringify(receivedUser));
+
+    setToken(receivedToken);
+    setUser(receivedUser);
+
+    return { user: receivedUser, redirectUrl };
+  };
+
   const logout = async () => {
     try {
       await api.post('/auth/logout');
@@ -57,7 +70,9 @@ export function AuthProvider({ children }) {
       localStorage.removeItem('user');
       setUser(null);
       setToken(null);
-      window.location.href = '/login';
+      if (typeof window !== 'undefined') {
+        window.location.replace('/login');
+      }
     }
   };
 
@@ -88,6 +103,8 @@ export function AuthProvider({ children }) {
         token,
         loading,
         login,
+        register,
+        signup: register,
         logout,
         updateCoinBalance,
         refreshUser,

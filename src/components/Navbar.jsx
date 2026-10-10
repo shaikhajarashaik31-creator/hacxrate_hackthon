@@ -70,13 +70,14 @@ export function Navbar({ onToggleSidebar, pageTitle = 'Dashboard' }) {
             </div>
           </div>
 
-          {/* Logout Button */}
+          {/* Sign Out Button */}
           <button
             onClick={logout}
-            title="Sign out of EduPulse"
-            className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+            title="Sign out of EduPulse AI"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-slate-500 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-100 transition-all font-semibold text-xs cursor-pointer group"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-4 h-4 text-slate-400 group-hover:text-rose-600 transition" />
+            <span className="hidden sm:inline">Sign Out</span>
           </button>
         </div>
       </div>

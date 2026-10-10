@@ -217,6 +217,16 @@ export function StudentLogin() {
             </button>
           </form>
 
+          {/* Switch to Sign Up */}
+          <div className="text-center pt-1">
+            <p className="text-xs text-slate-500">
+              Don't have a student account yet?{' '}
+              <Link to="/signup" className="font-bold text-indigo-600 hover:text-indigo-800 transition">
+                Sign up &amp; get 100 free coins &rarr;
+              </Link>
+            </p>
+          </div>
+
           {/* Quick Demo Student Accounts */}
           <div className="pt-5 border-t border-slate-100">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center justify-between">

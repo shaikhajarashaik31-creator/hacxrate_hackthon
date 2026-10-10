@@ -1,52 +1,21 @@
-// import axios from 'axios';
-
-// const api = axios.create({
-//   baseURL: '/api',
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-// });
-
-// // Request interceptor: attach JWT token if present
-// api.interceptors.request.use(
-//   (config) => {
-//     const token = localStorage.getItem('token');
-//     if (token) {
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return config;
-//   },
-//   (error) => Promise.reject(error)
-// );
-
-// // Response interceptor: handle 401 Unauthorized
-// api.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     if (error.response && error.response.status === 401) {
-//       const currentPath = window.location.pathname;
-//       if (currentPath !== '/login') {
-//         localStorage.removeItem('token');
-//         localStorage.removeItem('user');
-//         window.location.href = '/login';
-//       }
-//     }
-//     return Promise.reject(error);
-//   }
-// );
-
-// export default api;
-
-
-
-
-
-
-
 import axios from 'axios';
 
+// Dynamically determine the best API endpoint
+const getBaseURL = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  // When running locally in development or preview on localhost/127.0.0.1, use relative /api
+  // which works with Vite's dev server proxy to localhost:5000 or the local Express server
+  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    return '/api';
+  }
+  // Fallback for cloud/production deployments
+  return 'https://hacxlerate-hackthon-backend-1.onrender.com/api';
+};
+
 const api = axios.create({
-  baseURL: 'https://hacxlerate-hackthon-backend-1.onrender.com/api',
+  baseURL: getBaseURL(),
   headers: {
     'Content-Type': 'application/json',
   },
@@ -56,11 +25,9 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
-
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-
     return config;
   },
   (error) => Promise.reject(error)
@@ -72,11 +39,12 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       const currentPath = window.location.pathname;
+      const isAuthPage = currentPath === '/login' || currentPath === '/signin' || currentPath === '/signup' || currentPath === '/register';
 
-      if (currentPath !== '/login') {
+      if (!isAuthPage) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        window.location.href = '/login';
+        window.location.replace('/login');
       }
     }
 
@@ -85,4 +53,3 @@ api.interceptors.response.use(
 );
 
 export default api;
-
